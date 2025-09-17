@@ -4,12 +4,18 @@ import './index.css'
 import App from './App.jsx'
 
 import { WagmiProvider } from 'wagmi';
-import { config } from 'wagmi';
+import { config } from './wagmi.jsx';
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <WagmiProvider config={config}>
-    <App />
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </WagmiProvider>
   </StrictMode>,
 )
