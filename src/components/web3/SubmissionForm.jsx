@@ -1,11 +1,13 @@
-import { useState } from "react";
-import { useWriteContract } from "wagmi";
+import { useState, useEffect } from "react";
+import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { DKP_CONTRACT_ADDRESS, DKP_CONTRACT_ABI } from "../../constants";
 import { ethers } from "ethers";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function SubmissionForm() {
 
     const [content, setContent] = useState('');
+    const queryClient = useQueryClient();
 
     const {data: hash, isPending, error, writeContract} = useWriteContract();
 
@@ -26,6 +28,21 @@ export function SubmissionForm() {
         });
     }
 
+    const {isLoading: isConfirming, isSuccess: isConfirmed} = useWaitForTransactionReceipt({
+        hash,
+    })
+
+    useEffect(() => {
+
+        if (isConfirmed) {
+            console.log("Submission confirmed! Refetching data....");
+        }
+
+        queryClient.invalidateQueries({ queryKey: ['readContracts'] });
+        setContent('');
+
+    }, [isConfirmed, queryClient]);
+
     return (
         <div className="text-white bg-gray-800 p-4 rounded-lg">
             <h2 className="text-xl font-bold mb-2">Submit New Knowledge</h2>
@@ -40,10 +57,10 @@ export function SubmissionForm() {
                 />
                 <button
                 type="submit"
-                disabled={isPending}
+                disabled={isPending || isConfirming}
                 className="mt-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-500"
                 >
-                {isPending ? 'Confirming...' : 'Submit'}
+                {isPending ? 'Confirm in wallet...' : isConfirming ? 'Waiting for confirmation' : 'Submit'}
                 </button>
             </form>
 
