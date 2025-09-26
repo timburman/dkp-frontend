@@ -1,5 +1,7 @@
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 
+import { Button } from "../ui/button";
+
 export function ConnectWallet() {
     const { address, isConnected } = useAccount();
 
@@ -10,12 +12,9 @@ export function ConnectWallet() {
     return (
       <div className="text-white text-center">
         <p className="mb-2">Connected: {address}</p>
-        <button
-          onClick={() => disconnect()}
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-        >
+        <Button variant="destructive" onClick={() => disconnect()}>
           Disconnect
-        </button>
+        </Button>
       </div>
     );
   }
@@ -27,13 +26,9 @@ export function ConnectWallet() {
       {connectors
         .filter((connector) => connector.type === 'injected' || connector.id === 'walletConnect') // Optional: Filter to ensure only desired connectors appear
         .map((connector) => (
-          <button
-            key={connector.uid}
-            onClick={() => connect({ connector })}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-48"
-          >
-            {connector.name}
-          </button>
+          <Button key={connector.uid} onClick={() => connect({ connector })} className="w-48">
+          {connector.name}
+        </Button>
       ))}
       
       {/* You can add a check for users who have no browser wallet installed */}

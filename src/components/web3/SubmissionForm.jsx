@@ -3,6 +3,9 @@ import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { DKP_CONTRACT_ADDRESS, DKP_CONTRACT_ABI } from "../../constants";
 import { ethers } from "ethers";
 import { useQueryClient } from "@tanstack/react-query";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { Button } from "../ui/button";
+import { Textarea } from "../ui/textarea";
 
 export function SubmissionForm() {
 
@@ -44,31 +47,35 @@ export function SubmissionForm() {
     }, [isConfirmed, queryClient]);
 
     return (
-        <div className="text-white bg-gray-800 p-4 rounded-lg">
-            <h2 className="text-xl font-bold mb-2">Submit New Knowledge</h2>
-            <form onSubmit={submit}>
-                <textarea
-                name="content"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Share what you know..."
-                className="w-full p-2 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                rows="4"
+        <Card className="bg-gray-800 border-gray-700 text-white">
+            <CardHeader>
+                <CardTitle>Submit New Knowledge</CardTitle>
+                <CardDescription>Share what you know with the community.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <form onSubmit={submit}>
+                {/* 3. Replace the old textarea with the new one */}
+                <Textarea
+                    name="content"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder="Type your content here..."
+                    className="bg-gray-900 border-gray-600"
                 />
-                <button
-                type="submit"
-                disabled={isPending || isConfirming}
-                className="mt-2 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-500"
+                <Button
+                    type="submit"
+                    disabled={isPending || isConfirming}
+                    className="mt-4 w-full"
                 >
-                {isPending ? 'Confirm in wallet...' : isConfirming ? 'Waiting for confirmation' : 'Submit'}
-                </button>
-            </form>
-
-            {/* Feedback UI for the user */}
-            {hash && <div className="mt-2 text-green-400">Transaction Sent! Hash: {hash}</div>}
-            {error && (
-                <div className="mt-2 text-red-500">Error: {error.message}</div>
-            )}
-        </div>
+                    {isPending ? 'Confirm...' : isConfirming ? 'Confirming...' : 'Submit'}
+                </Button>
+                </form>
+                {/* Feedback UI for the user */}
+                {hash && <div className="mt-2 text-green-400">Transaction Sent! Hash: {hash}</div>}
+                {error && (
+                    <div className="mt-2 text-red-500">Error: {error.message}</div>
+                )}
+            </CardContent>
+            </Card>
     );
 }

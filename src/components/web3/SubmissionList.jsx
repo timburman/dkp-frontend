@@ -1,6 +1,7 @@
 import { useReadContract, useReadContracts } from "wagmi";
 import { DKP_CONTRACT_ABI, DKP_CONTRACT_ADDRESS } from "../../constants";
 import { VoteButtons } from "./VoteButtons";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 
 export function SubmissionList() {
 
@@ -52,29 +53,39 @@ export function SubmissionList() {
     }
 
     return (
-        <div className="text-white bg-gray-800 p-4 rounded-lg">
-            <h2 className="text-xl font-bold mb-4">Submitted Knowledge</h2>
-            <div className="flex flex-col gap-4">
-                {submissionsData && submissionsData.map((submission, index) => {
-                // Get the submission ID from the returned data (it's the first element)
-                const submissionId = submission.result[0];
+        <div>
+      <h2 className="text-xl font-bold mb-4 text-white">Submitted Knowledge</h2>
+      <div className="flex flex-col gap-4">
+        {submissionsData && submissionsData.map((submission, index) => {
+          const submissionId = submission.result[0];
+          const authorAddress = submission.result[2];
+          const upVotes = submission.result[4].toString();
+          const downVotes = submission.result[5].toString();
 
-                return submission.result 
-                    ? <div key={index} className="bg-gray-700 p-3 rounded break-words">
-                        <p><b>ID:</b> {submission.result[0].toString()}</p>
-                        <p><b>Hash:</b> {submission.result[1]}</p>
-                        <p><b>Author:</b> {submission.result[2]}</p>
-                        <p><b>Upvotes:</b> {submission.result[4].toString()}</p>
-                        <p><b>Downvotes:</b> {submission.result[5].toString()}</p>
-                        
-                        {/* 2. Add the VoteButtons component here, passing the ID as a prop */}
-                        <VoteButtons submissionId={submissionId} />
+          // Helper to shorten the address for display
+          const shortenAddress = (addr) => `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
 
-                    </div>
-                    : null
-                })}
-            </div>
-        </div>
+          return submission.result ? (
+            // 2. Replace the old div with the new Card component structure
+            <Card key={index} className="bg-gray-800 border-gray-700 text-white">
+              <CardHeader>
+                <CardTitle>Submission ID: {submissionId.toString()}</CardTitle>
+                <CardDescription>Author: {shortenAddress(authorAddress)}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-400 break-words">Hash: {submission.result[1]}</p>
+              </CardContent>
+              <CardFooter className="flex justify-between items-center">
+                <div className="flex gap-4 text-sm">
+                  <span className="text-green-400">Upvotes: {upVotes}</span>
+                  <span className="text-red-400">Downvotes: {downVotes}</span>
+                </div>
+                <VoteButtons submissionId={submissionId} />
+              </CardFooter>
+            </Card>
+          ) : null;
+        })}
+      </div>
+    </div>
     );
-
 }
