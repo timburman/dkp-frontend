@@ -1,9 +1,13 @@
-import { useWriteContract } from "wagmi";
+import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { DKP_CONTRACT_ABI, DKP_CONTRACT_ADDRESS } from "../../constants";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+
 
 export function VoteButtons({submissionId}) {
 
     const {isPending, error, writeContract, data: hash} = useWriteContract();
+    const queryClient = useQueryClient();
 
     const handleVote = (isUpVote) => {
 
@@ -15,15 +19,26 @@ export function VoteButtons({submissionId}) {
         });
     };
 
+    const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+        hash,
+    });
+
+    useEffect(() => {
+        if (isConfirmed) {
+            console.log("Vote confirmed! Refereshing data....");
+            queryClient.invalidateQueries({queryKey: ['readContracts']});
+        }
+    }, [isConfirmed, queryClient]);
+
     return (
         <div className="mt-4">
             <div className="flex gap-4">
                 <button
                 onClick={() => handleVote(true)} // true for upvote
-                disabled={isPending}
+                disabled={isPending || isConfirming}
                 className="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-sm disabled:bg-gray-500"
                 >
-                {isPending ? '...' : 'Upvote'}
+                {isPending ? '...' : isConfirming ? '...' :'Upvote'}
                 </button>
                 <button
                 onClick={() => handleVote(false)} // false for downvote
