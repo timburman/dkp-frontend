@@ -1,36 +1,40 @@
 // src/App.jsx
+import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
+
 import { useAccount } from 'wagmi';
-import { ConnectWallet } from './components/web3/ConnectWallet';
-import { ContractInfo } from './components/web3/ContractInfo';
-import { SubmissionForm } from './components/web3/SubmissionForm';
-import { SubmissionList } from './components/web3/SubmissionList';
+import { HomePage } from './pages/HomePage';
+import { SubmitPage } from './pages/SubmitPage';
+import { Navbar } from './components/layout/Navbar';
+
+const AppLayout = () => {
+  const { isConnected } = useAccount();
+
+  return (
+    <div className="bg-gray-900 min-h-screen">
+      <Navbar />
+      <main>
+        <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+          {/* Outlet is a placeholder where the current page's content will be rendered */}
+          {isConnected ? <Outlet /> : <p className="text-white text-center">Please connect your wallet to continue.</p>}
+        </div>
+      </main>
+    </div>
+  );
+}
 
 
 function App() {
 
-  const {isConnected} = useAccount();
-
   return (
-    <div className="bg-gray-900 min-h-screen flex flex-col items-center py-10 px-4">
-      <div className="w-full max-w-md mx-auto">
-        <header className="mb-8 text-center">
-          <h1 className="text-4xl font-bold text-white">
-            Decentralized Knowledge Proof
-          </h1>
-        </header>
-        <main className="flex flex-col gap-6">
-          <ConnectWallet />
-          <ContractInfo />
-
-          {isConnected && (
-            <>
-              <SubmissionForm />
-              <SubmissionList /> {/* 2. Add the list here */}
-            </>
-          )}
-        </main>
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {/* All routes inside here will share the AppLayout (Navbar, etc.) */}
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/submit" element={<SubmitPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
