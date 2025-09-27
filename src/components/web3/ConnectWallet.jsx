@@ -1,46 +1,27 @@
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+// src/components/web3/ConnectWallet.jsx
 
-import { Button } from "../ui/button";
+import { useAccount, useDisconnect } from 'wagmi';
+import { Button } from '@/components/ui/button';
+import { useAppKit } from "@reown/appkit/react";
+
+// You can create this helper function in `src/lib/utils.js`
+const shortenAddress = (addr) => {
+  if (!addr) return '';
+  return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
+};
 
 export function ConnectWallet() {
-    const { address, isConnected } = useAccount();
+  const { open } = useAppKit();
+  const { address, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
 
-    const { connect, connectors, isPending, error } = useConnect();
-    const { disconnect } = useDisconnect();
-
-    if (isConnected) {
+  if (isConnected) {
     return (
-      <div className="text-white text-center">
-        <p className="mb-2">Connected: {address}</p>
-        <Button variant="destructive" onClick={() => disconnect()}>
-          Disconnect
-        </Button>
-      </div>
+      <Button onClick={() => disconnect()} variant="secondary">
+        {shortenAddress(address)}
+      </Button>
     );
   }
 
-  // If not connected, display a button for EACH available connector
-  return (
-    <div className="flex flex-col items-center gap-4">
-      {/* This logic now automatically shows MetaMask or Safe if they are installed */}
-      {connectors
-        .filter((connector) => connector.type === 'injected' || connector.id === 'walletConnect') // Optional: Filter to ensure only desired connectors appear
-        .map((connector) => (
-          <Button key={connector.uid} onClick={() => connect({ connector })} className="w-48">
-          {connector.name}
-        </Button>
-      ))}
-      
-      {/* You can add a check for users who have no browser wallet installed */}
-      {!connectors.some(c => c.type === 'injected') && (
-        <p className="text-yellow-500 text-xs mt-2">
-          No browser wallet detected. Install MetaMask to connect directly.
-        </p>
-      )}
-
-      {isPending && <p className="text-white">Connecting...</p>}
-      {error && <p className="text-red-500">Error: {error.message}</p>}
-    </div>
-  );
-
+  return <Button onClick={() => open()}>Connect Wallet</Button>;
 }
