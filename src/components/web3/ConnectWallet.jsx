@@ -3,6 +3,14 @@
 import { useAccount, useDisconnect } from 'wagmi';
 import { Button } from '@/components/ui/button';
 import { useAppKit } from "@reown/appkit/react";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@radix-ui/react-dropdown-menu';
 
 // You can create this helper function in `src/lib/utils.js`
 const shortenAddress = (addr) => {
@@ -17,9 +25,27 @@ export function ConnectWallet() {
 
   if (isConnected) {
     return (
-      <Button onClick={() => disconnect()} variant="secondary">
-        {shortenAddress(address)}
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="secondary">{shortenAddress(address)}</Button>
+        </DropdownMenuTrigger>
+        
+        <DropdownMenuContent className="w-56 bg-gray-800 border-gray-700 text-white">
+          {/* --- STYLE CHANGE 1: Make the label a muted title --- */}
+          <DropdownMenuLabel className="font-normal text-gray-400">
+            My Wallet
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator className="bg-gray-700" />
+          
+          {/* --- STYLE CHANGE 2: Add a red hover/focus effect --- */}
+          <DropdownMenuItem
+            onClick={() => disconnect()}
+            className="cursor-pointer text-red-400 focus:bg-red-500/20 focus:text-red-300"
+          >
+            Disconnect
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   }
 
