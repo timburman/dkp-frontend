@@ -1,21 +1,22 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+// src/main.jsx
 
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.jsx';
+import './index.css';
+
+// 1. Import the providers and config
 import { WagmiProvider } from 'wagmi';
-import { config } from './wagmi.jsx';
+import { QueryClientProvider } from "@tanstack/react-query";
+import { wagmiConfig, queryClient } from './wagmi.jsx';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const queryClient = new QueryClient();
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <WagmiProvider config={config}>
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <App />
       </QueryClientProvider>
     </WagmiProvider>
-  </StrictMode>,
-)
+  </React.StrictMode>,
+);
