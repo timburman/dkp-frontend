@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ConnectWallet } from "../web3/ConnectWallet";
+import { UserStats } from "../web3/UserStats";
 
 export function Navbar() {
 
@@ -22,7 +23,8 @@ export function Navbar() {
               </div>
             </div>
           </div>
-          <div>
+          <div className="flex items-center gap-4">
+            <UserStats />
             <ConnectWallet />
           </div>
         </div>
