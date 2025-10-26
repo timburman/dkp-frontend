@@ -2,6 +2,7 @@ import { useReadContract, useReadContracts } from "wagmi";
 import { DKP_CONTRACT_ABI, DKP_CONTRACT_ADDRESS } from "../../constants";
 import { VoteButtons } from "./VoteButtons";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { BoostModal } from "./BoostModal";
 
 export function SubmissionList() {
 
@@ -65,6 +66,8 @@ export function SubmissionList() {
           // Helper to shorten the address for display
           const shortenAddress = (addr) => `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
 
+          const boostAmount = submission.result[6].toString();
+
           return submission.result ? (
             // 2. Replace the old div with the new Card component structure
             <Card key={index} className="bg-gray-800 border-gray-700 text-white">
@@ -79,8 +82,10 @@ export function SubmissionList() {
                 <div className="flex gap-4 text-sm">
                   <span className="text-green-400">Upvotes: {upVotes}</span>
                   <span className="text-red-400">Downvotes: {downVotes}</span>
+                  <span className="text-blue-400">Boost: {boostAmount}</span>
                 </div>
                 <VoteButtons submissionId={submissionId} />
+                <BoostModal submissionId={submissionId} />
               </CardFooter>
             </Card>
           ) : null;
