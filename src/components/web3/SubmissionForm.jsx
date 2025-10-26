@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { DKP_CONTRACT_ADDRESS, DKP_CONTRACT_ABI } from "../../constants";
 import { ethers } from "ethers";
@@ -11,8 +12,9 @@ export function SubmissionForm() {
 
     const [content, setContent] = useState('');
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
-    const {data: hash, isPending, error, writeContract} = useWriteContract();
+    const {writeContract ,data: hash, isPending, error} = useWriteContract();
 
     async function submit(e) {
         e.preventDefault();
@@ -44,7 +46,9 @@ export function SubmissionForm() {
         queryClient.invalidateQueries({ queryKey: ['readContracts'] });
         setContent('');
 
-    }, [isConfirmed, queryClient]);
+        navigate('/');
+
+    }, [isConfirmed, queryClient, navigate]);
 
     return (
         <Card className="bg-gray-800 border-gray-700 text-white">
