@@ -5,6 +5,7 @@ import { useAccount } from 'wagmi';
 import { HomePage } from './pages/HomePage';
 import { SubmitPage } from './pages/SubmitPage';
 import { Navbar } from './components/layout/Navbar';
+import { ProfilePage } from './pages/ProfilePage';
 
 const AppLayout = () => {
   const { isConnected } = useAccount();
@@ -32,6 +33,7 @@ function App() {
         <Route element={<AppLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/submit" element={<SubmitPage />} />
+          <Route path='/profile' element={<ProfilePage />} />
         </Route>
       </Routes>
     </BrowserRouter>
