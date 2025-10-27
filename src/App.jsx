@@ -6,6 +6,7 @@ import { HomePage } from './pages/HomePage';
 import { SubmitPage } from './pages/SubmitPage';
 import { Navbar } from './components/layout/Navbar';
 import { ProfilePage } from './pages/ProfilePage';
+import { Toaster } from './components/ui/toaster';
 
 const AppLayout = () => {
   const { isConnected } = useAccount();
@@ -19,6 +20,7 @@ const AppLayout = () => {
           {isConnected ? <Outlet /> : <p className="text-white text-center">Please connect your wallet to continue.</p>}
         </div>
       </main>
+      <Toaster />
     </div>
   );
 }
