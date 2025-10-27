@@ -4,16 +4,10 @@ import { SubmissionCard } from "./SubmissionCard";
 
 export function SubmissionList() {
 
-    const { data: idCounter, isLoading: isCounterLoading, isSuccess: isCounterSuccess } = useReadContract({
+    const { data: idCounter, isLoading: isCounterLoading} = useReadContract({
         address: DKP_CONTRACT_ADDRESS,
         abi: DKP_CONTRACT_ABI,
         functionName: 'getCurrentId',
-    });
-
-    console.log("Counter Hook:", { 
-        idCounter, 
-        isCounterLoading, 
-        isCounterSuccess 
     });
 
     const submissionCount = idCounter ? Number(idCounter) : 0;
