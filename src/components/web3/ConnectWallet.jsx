@@ -3,6 +3,7 @@
 import { useAccount, useDisconnect } from 'wagmi';
 import { Button } from '@/components/ui/button';
 import { useAppKit } from "@reown/appkit/react";
+import { Link } from 'react-router-dom';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -36,6 +37,10 @@ export function ConnectWallet() {
             My Wallet
           </DropdownMenuLabel>
           <DropdownMenuSeparator className="bg-gray-700" />
+
+          <DropdownMenuItem asChild className="cursor-pointer focus:bg-gray-700">
+            <Link to="/profile">My Profile</Link>
+          </DropdownMenuItem>
           
           {/* --- STYLE CHANGE 2: Add a red hover/focus effect --- */}
           <DropdownMenuItem
