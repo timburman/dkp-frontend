@@ -41,12 +41,10 @@ export function SubmissionForm() {
 
         if (isConfirmed) {
             console.log("Submission confirmed! Refetching data....");
+            queryClient.invalidateQueries({ queryKey: ['readContracts'] });
+            setContent('');
+            navigate('/');
         }
-
-        queryClient.invalidateQueries({ queryKey: ['readContracts'] });
-        setContent('');
-
-        navigate('/');
 
     }, [isConfirmed, queryClient, navigate]);
 
