@@ -29,11 +29,13 @@ export function UserStats() {
 
     return (
         <div className="flex items-center gap-4">
-        <div className="text-sm text-white">
+        {/* Reputation */}
+        <div className="text-sm text-white bg-gray-700/50 px-3 py-1.5 rounded-md">
             <span className="font-bold">{reputation}</span>
             <span className="text-gray-400"> REP</span>
         </div>
-        <div className="text-sm text-white">
+        {/* Token Balance */}
+        <div className="text-sm text-white bg-gray-700/50 px-3 py-1.5 rounded-md">
             <span className="font-bold">{balance}</span>
             <span className="text-gray-400"> $DKP</span>
         </div>
