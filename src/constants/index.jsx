@@ -410,6 +410,19 @@ export const DKP_CONTRACT_ABI = [
     },
     {
       "type": "function",
+      "name": "setMinVoteCountForReview",
+      "inputs": [
+        {
+          "name": "_newCount",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [],
+      "stateMutability": "nonpayable"
+    },
+    {
+      "type": "function",
       "name": "submissions",
       "inputs": [
         {
@@ -534,6 +547,30 @@ export const DKP_CONTRACT_ABI = [
       ],
       "outputs": [],
       "stateMutability": "payable"
+    },
+    {
+      "type": "function",
+      "name": "userSubmissions",
+      "inputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
     },
     {
       "type": "function",
