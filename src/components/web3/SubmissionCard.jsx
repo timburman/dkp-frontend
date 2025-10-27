@@ -79,14 +79,18 @@ export function SubmissionCard({submissionId}) {
         watch: true,
     });
 
+    const { data: lockedRep } = useReadContract({
+        address: DKP_CONTRACT_ADDRESS,
+        abi: DKP_CONTRACT_ABI,
+        functionName: 'lockedReputation',
+        args: [submissionId, userAddress],
+        watch: true,
+    });
+
     if (!submission) return <div className="text-white">Loading...</div>;
 
-    const [id, hash, author, ts, upVotes, downVotes, boostAmountWei, totalVoteWeight, ...rest] = submission;
+    const [id, hash, author, ts, upVotes, downVotes, boostAmountWei, ...rest] = submission;
 
-    console.log("Time stamp:", ts);
-    console.log("Up Votes", upVotes);
-    console.log("Down Votes:", downVotes);
-    console.log("Total vote weight", totalVoteWeight);
 
     const boostAmount = ethers.formatUnits(boostAmountWei, 18);
 
@@ -95,43 +99,44 @@ export function SubmissionCard({submissionId}) {
 
     const isAuthor = userAddress === author;
     const canVote = status === "Pending" || status === "In Review";
+    const canFinalize = status === "In Review";
     const canClaimReward = isAuthor && status === "Verified";
-    const canReclaim = (status === "Verified" || status === "Rejected") && (userVote > 0);
+    const canReclaim = (status === "Verified" || status === "Rejected") && (userVote > 0) && (lockedRep > 0);
 
     return (
-        <Card className="bg-gray-800 border-gray-700 text-white">
-        <CardHeader>
-            <div className="flex justify-between items-start">
-            <div>
-                <CardTitle>Submission ID: {id.toString()}</CardTitle>
-                <CardDescription>Author: {shortenAddress(author)}</CardDescription>
-            </div>
-            <Badge 
-                variant={status === "Verified" ? "default" : status === "Rejected" ? "destructive" : "secondary"}
-                className={status === "Verified" ? "bg-green-600" : ""}
-            >
-                {status}
-            </Badge>
-            </div>
-        </CardHeader>
-        <CardContent>
-            <p className="text-sm text-gray-400 break-words">Hash: {hash}</p>
-        </CardContent>
-        <CardFooter className="flex justify-between items-center">
-            <div className="flex gap-4 text-sm">
-            <span className="text-green-400">Up: {ethers.formatUnits(upVotes, 0)}</span>
-            <span className="text-red-400">Down: {ethers.formatUnits(downVotes, 0)}</span>
-            <span className="text-blue-400">Boost: {boostAmount}</span>
-            </div>
-            <div className="flex gap-2">
-            {/* Show the correct action based on status and user */}
-            {canVote && <VoteButtons submissionId={id} />}
-            {canClaimReward && <ClaimRewardButton submissionId={id} />}
-            {canReclaim && <ReclaimReputationButton submissionId={id} />}
-            <BoostModal submissionId={id} />
-            </div>
-        </CardFooter>
-        </Card>
-    );
+    <Card className="bg-gray-800 border-gray-700 text-white">
+      <CardHeader>
+        <div className="flex justify-between items-start">
+          <div>
+            <CardTitle>Submission ID: {id.toString()}</CardTitle>
+            <CardDescription>Author: {shortenAddress(author)}</CardDescription>
+          </div>
+          <Badge 
+            variant={status === "Verified" ? "default" : status === "Rejected" ? "destructive" : "secondary"}
+            className={status === "Verified" ? "bg-green-600" : ""}
+          >
+            {status}
+          </Badge>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-gray-400 break-words">Hash: {hash}</p>
+      </CardContent>
+      <CardFooter className="flex justify-between items-center">
+        <div className="flex gap-4 text-sm">
+          <span className="text-green-400">Up: {upVotes.toString()}</span>
+          <span className="text-red-400">Down: {downVotes.toString()}</span>
+          <span className="text-blue-400">Boost: {boostAmount}</span>
+        </div>
+        <div className="flex flex-wrap gap-2 justify-end">
+          {/* Show the correct action based on status and user */}
+          {canVote && <VoteButtons submissionId={id} />}
+          {canClaimReward && <ClaimRewardButton submissionId={id} />}
+          {canReclaim && <ReclaimReputationButton submissionId={id} />}
+          <BoostModal submissionId={id} />
+        </div>
+      </CardFooter>
+    </Card>
+  );
 
 }
