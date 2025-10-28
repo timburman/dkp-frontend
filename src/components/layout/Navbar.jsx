@@ -23,8 +23,8 @@ export function Navbar() {
             <Link to="/" className="text-foreground/80 hover:text-primary transition-colors">
               Home
             </Link>
-            <Link to="/submit" className="text-foreground/80 hover:text-primary transition-colors">
-              Submit
+            <Link to="/explore" className="text-foreground/80 hover:text-primary transition-colors">
+              Explore
             </Link>
             <Link to="/profile" className="text-foreground/80 hover:text-primary transition-colors">
               Profile
