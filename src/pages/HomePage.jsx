@@ -1,11 +1,50 @@
-import { ContractInfo } from "@/components/web3/ContractInfo";
+import { Hero } from "@/components/Hero";
+import { Features } from "@/components/Features";
+import { HowItWorks } from "@/components/HowItWorks";
+import { SybilResistance } from "@/components/SybilResistance";
 import { SubmissionList } from "@/components/web3/SubmissionList";
 
 export function HomePage() {
     return (
-        <div className="flex flex-col gap-6">
-            <ContractInfo />
+        // Structure from Index.tsx
+        <div className="min-h-screen"> {/* Removed bg-background as it's global */}
+        {/* Navbar is handled by AppLayout */}
+        <Hero />
+        <Features />
+        <HowItWorks />
+        <SybilResistance />
+        
+        {/* Keep the Submission List */}
+        <section id="explore" className="py-24 relative">
+            <div className="container mx-auto px-6">
+            <div className="text-center mb-16 space-y-4">
+                <h2 className="text-4xl md:text-5xl font-bold">
+                Explore <span className="glow-text bg-gradient-cyber bg-clip-text text-transparent">Knowledge</span>
+                </h2>
+                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Browse and verify recent submissions from the community
+                </p>
+            </div>
             <SubmissionList />
+            </div>
+        </section>
+        
+        {/* Footer */}
+        <footer className="border-t border-primary/20 py-8 mt-24">
+            <div className="container mx-auto px-6">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-gradient-cyber flex items-center justify-center">
+                    <span className="text-lg font-bold">D</span>
+                </div>
+                <span className="text-xl font-bold">DKP</span>
+                </div>
+                <p className="text-muted-foreground text-sm">
+                © 2025 DKP. Decentralized Knowledge Proof. All rights reserved.
+                </p>
+            </div>
+            </div>
+        </footer>
         </div>
     );
 }
