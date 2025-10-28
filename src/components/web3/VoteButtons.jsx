@@ -6,6 +6,13 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { useToast } from "@/hooks/use-toast";
+
+const EtherscanLink = ({hash}) => {
+    <a href={`https://sepolia.etherscan.io/tx/${hash}`} target="_blank" rel="noopener noreferrer">
+        <Button variant="link" className="p-0 h-auto">View on Etherscan</Button>
+    </a>
+}
 
 
 export function VoteButtons({submissionId}) {
@@ -16,6 +23,8 @@ export function VoteButtons({submissionId}) {
     const {address} = useAccount();
     const queryClient = useQueryClient();
 
+    const {toast} = useToast();
+
     const {data: reputationData} = useReadContract({
         address: DKP_CONTRACT_ABI,
         abi: DKP_CONTRACT_ABI,
@@ -25,9 +34,11 @@ export function VoteButtons({submissionId}) {
     });
     const userReputation = reputationData ? reputationData.toString() : '0';
 
-    const { writeContract, data: hash, isPending, error } = useWriteContract();
+    const {writeContract, data: hash, isPending, error: writeError} = useWriteContract();
 
-    const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash });
+    const {isLoading: isConfirming, isSuccess: isConfirmed, error: receiptError} = useWaitForTransactionReceipt({
+        hash
+    });
 
     function handleVote() {
         const voteWeight = BigInt(stakeAmount);
@@ -40,12 +51,37 @@ export function VoteButtons({submissionId}) {
     }
 
     useEffect(() => {
-        if (isConfirmed) {
-        queryClient.invalidateQueries({ queryKey: ['readContracts'] });
-        queryClient.invalidateQueries({ queryKey: ['readContract'] });
-        setIsOpen(false);
+        if (isPending) {
+            toast({
+                title: "Check your wallet",
+                description: "Please approve the transaction...",
+            });
+        } else if(isConfirming) {
+            toast({
+                title: "Transaction Sent",
+                description: "Waiting for confirmation...",
+                action: <EtherscanLink hash={hash} />,
+            });
         }
-    }, [isConfirmed, queryClient]);
+    }, [isPending, isConfirming, hash, toast]);
+
+    useEffect(() => {
+        const e = writeError || receiptError;
+        if (isConfirmed) {
+            toast({
+                title: "Success! 🎉",
+                description: "Post Boosted!",
+                variant: "default", // You can style this to be green
+            });
+            queryClient.invalidateQueries({ queryKey: ['readContracts'] });
+        } else if (e) {
+            toast({
+                title: "Transaction Failed",
+                description: e.shortMessage || e.message,
+                variant: "destructive",
+            });
+        }
+    }, [isConfirmed, writeError, receiptError, toast, queryClient]);
 
     function openModal(upvote) {
         setIsUpvote(upvote);
@@ -91,7 +127,6 @@ export function VoteButtons({submissionId}) {
                 {isConfirming ? 'Confirming...' : `Confirm ${isUpvote ? 'Upvote' : 'Downvote'}`}
             </Button>
             </DialogFooter>
-            {error && <p className="text-red-500 text-sm mt-2">Error: {error.shortMessage}</p>}
         </DialogContent>
         </Dialog>
   );
