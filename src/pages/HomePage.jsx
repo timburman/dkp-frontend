@@ -14,21 +14,6 @@ export function HomePage() {
         <HowItWorks />
         <SybilResistance />
         
-        {/* Keep the Submission List */}
-        <section id="explore" className="py-24 relative">
-            <div className="container mx-auto px-6">
-            <div className="text-center mb-16 space-y-4">
-                <h2 className="text-4xl md:text-5xl font-bold">
-                Explore <span className="glow-text bg-gradient-cyber bg-clip-text text-transparent">Knowledge</span>
-                </h2>
-                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Browse and verify recent submissions from the community
-                </p>
-            </div>
-            <SubmissionList />
-            </div>
-        </section>
-        
         {/* Footer */}
         <footer className="border-t border-primary/20 py-8 mt-24">
             <div className="container mx-auto px-6">
