@@ -42,6 +42,11 @@ export function ConnectWallet() {
           <DropdownMenuItem asChild className="cursor-pointer focus:bg-gray-700">
             <Link to="/profile">My Profile</Link>
           </DropdownMenuItem>
+          <DropdownMenuSeparator className="bg-gray-700" />
+
+          <DropdownMenuItem asChild className="cursor-pointer focus:bg-gray-700">
+            <Link to="/voting-history">Voting History</Link>
+          </DropdownMenuItem>
           
           {/* --- STYLE CHANGE 2: Add a red hover/focus effect --- */}
           <DropdownMenuItem
