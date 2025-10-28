@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, FileText, Coins } from "lucide-react";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 const EtherscanLink = ({ hash }) => (
   <a href={`https://sepolia.etherscan.io/tx/${hash}`} target="_blank" rel="noopener noreferrer">
@@ -16,6 +18,8 @@ const EtherscanLink = ({ hash }) => (
 );
 
 export function SubmitPage() {
+
+    const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const { address } = useAccount();
     const queryClient = useQueryClient();
@@ -41,6 +45,7 @@ export function SubmitPage() {
 
     async function submit(e) {
         e.preventDefault();
+        if (!title) return toast({ title: "Error", description: "Title cannot be empty!", variant: "destructive" });
         if (!content) {
             alert('Content cannot be empty');
             return;
@@ -142,7 +147,21 @@ export function SubmitPage() {
             {/* We use a simple form, not react-hook-form */}
             <form onSubmit={submit} className="space-y-8">
                 <div className="glass-card p-8 space-y-6">
-                {/* Content Field */}
+                    {/* Content Field */}
+                    <div className="space-y-2">
+                    <Label htmlFor="title" className="text-lg font-semibold">Title</Label>
+                    <p className="text-sm text-muted-foreground">
+                        Provide a clear, descriptive title (max 200 chars).
+                    </p>
+                    <Input
+                        id="title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="e.g., The Impact of Quantum Computing on Cryptography"
+                        className="bg-background/50 border-primary/30 focus:border-primary"
+                        maxLength={200}
+                    />
+                </div>
                 <div className="space-y-2">
                     <label className="text-lg font-semibold block">Knowledge Submission</label>
                     <p className="text-sm text-muted-foreground">
@@ -153,6 +172,7 @@ export function SubmitPage() {
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Share your knowledge here..."
                     className="min-h-[300px] bg-background/50 border-primary/30 focus:border-primary resize-none"
+                    minLength={100}
                     />
                     {/* Optional: Add a character counter if needed */}
                 </div>
