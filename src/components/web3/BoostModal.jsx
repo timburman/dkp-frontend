@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { DKP_CONTRACT_ADDRESS, DKP_CONTRACT_ABI, DKP_TOKEN_ADDRESS, DKP_TOKEN_ABI } from "@/constants";
 import { Button } from "../ui/button";
@@ -6,11 +6,20 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from "../ui/input";
 import { ethers } from "ethers";
 import { useQueryClient } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+
+const EtherscanLink = ({hash}) => {
+    <a href={`https://sepolia.etherscan.io/tx/${hash}`} target="_blank" rel="noopener noreferrer">
+        <Button variant="link" className="p-0 h-auto">View on Etherscan</Button>
+    </a>
+}
 
 export function BoostModal({ submissionId }) {
     const [amount, setAmount] = useState('10');
     const {address} = useAccount();
     const queryClient = useQueryClient();
+
+    const {toast} = useToast();
 
     const {data: allowance, refetch: refetchAllowance} = useReadContract({
         address: DKP_TOKEN_ADDRESS,
@@ -20,7 +29,7 @@ export function BoostModal({ submissionId }) {
         watch: true,
     });
 
-    const {writeContract, data: hash, isPending, error} = useWriteContract();
+    const {writeContract, data: hash, isPending, error: writeError} = useWriteContract();
 
     const parsedAmount = ethers.parseUnits(amount || '0', 18);
     const hasEnoughAllowance = allowance >= parsedAmount;
@@ -43,13 +52,48 @@ export function BoostModal({ submissionId }) {
         });
     }
 
-    const {isLoading: isConfirming, isSuccess: isConfirmed} = useWaitForTransactionReceipt({hash});
+    const {isLoading: isConfirming, isSuccess: isConfirmed, error: receiptError} = useWaitForTransactionReceipt({
+        hash
+    });
 
     if (isConfirmed) {
         queryClient.invalidateQueries({queryKey: ['readContracts']});
         queryClient.invalidateQueries({queryKey: ['balance']});
         refetchAllowance();
     }
+
+    useEffect(() => {
+        if (isPending) {
+            toast({
+                title: "Check your wallet",
+                description: "Please approve the transaction...",
+            });
+        } else if(isConfirming) {
+            toast({
+                title: "Transaction Sent",
+                description: "Waiting for confirmation...",
+                action: <EtherscanLink hash={hash} />,
+            });
+        }
+    }, [isPending, isConfirming, hash, toast]);
+
+    useEffect(() => {
+        const e = writeError || receiptError;
+        if (isConfirmed) {
+            toast({
+                title: "Success! 🎉",
+                description: "Post Boosted!",
+                variant: "default", // You can style this to be green
+            });
+            queryClient.invalidateQueries({ queryKey: ['readContracts'] });
+        } else if (e) {
+            toast({
+                title: "Transaction Failed",
+                description: e.shortMessage || e.message,
+                variant: "destructive",
+            });
+        }
+    }, [isConfirmed, writeError, receiptError, toast, queryClient]);
 
     return (
     <Dialog>
@@ -93,7 +137,6 @@ export function BoostModal({ submissionId }) {
             </Button>
           )}
         </DialogFooter>
-        {error && <p className="text-red-500 text-sm mt-2">Error: {error.shortMessage}</p>}
       </DialogContent>
     </Dialog>
   );
