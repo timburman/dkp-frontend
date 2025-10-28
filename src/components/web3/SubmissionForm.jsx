@@ -36,7 +36,7 @@ export function SubmissionForm() {
         address: DKP_CONTRACT_ADDRESS,
         abi: DKP_CONTRACT_ABI,
         functionName: "SUBMISSION_COLLATERAL"
-    })
+    });
 
     const {writeContract ,data: hash, isPending, error: writeError} = useWriteContract();
 

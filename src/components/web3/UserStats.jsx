@@ -28,16 +28,20 @@ export function UserStats() {
     const reputation = reputationData ? reputationData.toString() : '0';
 
     return (
-        <div className="flex items-center gap-4">
-        {/* Reputation */}
-        <div className="text-sm text-white bg-gray-700/50 px-3 py-1.5 rounded-md">
-            <span className="font-bold">{reputation}</span>
-            <span className="text-gray-400"> REP</span>
+        // Apply styles matching the Navbar.tsx design
+        <div className="hidden sm:flex items-center gap-4"> {/* Hide on small screens like the design */}
+        {/* RP Balance */}
+        <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-card/80 border border-primary/30">
+            {/* Animated glow icon (using Tailwind classes) */}
+            <div className="w-3 h-3 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 animate-glow" /> 
+            <span className="font-semibold">{reputation} REP</span>
         </div>
-        {/* Token Balance */}
-        <div className="text-sm text-white bg-gray-700/50 px-3 py-1.5 rounded-md">
-            <span className="font-bold">{balance}</span>
-            <span className="text-gray-400"> $DKP</span>
+        
+        {/* DKP Balance */}
+        <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-card/80 border border-primary/30">
+            {/* Animated glow icon */}
+            
+            <span className="font-semibold">{balance} $DKP</span>
         </div>
         </div>
     );

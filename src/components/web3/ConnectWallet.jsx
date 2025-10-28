@@ -4,6 +4,7 @@ import { useAccount, useDisconnect } from 'wagmi';
 import { Button } from '@/components/ui/button';
 import { useAppKit } from "@reown/appkit/react";
 import { Link } from 'react-router-dom';
+import { Wallet } from 'lucide-react';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -41,6 +42,11 @@ export function ConnectWallet() {
           <DropdownMenuItem asChild className="cursor-pointer focus:bg-gray-700">
             <Link to="/profile">My Profile</Link>
           </DropdownMenuItem>
+          <DropdownMenuSeparator className="bg-gray-700" />
+
+          <DropdownMenuItem asChild className="cursor-pointer focus:bg-gray-700">
+            <Link to="/voting-history">Voting History</Link>
+          </DropdownMenuItem>
           
           {/* --- STYLE CHANGE 2: Add a red hover/focus effect --- */}
           <DropdownMenuItem
@@ -54,5 +60,13 @@ export function ConnectWallet() {
     );
   }
 
-  return <Button onClick={() => open()}>Connect Wallet</Button>;
+  return (
+    <Button 
+      onClick={() => open()} 
+      className="bg-gradient-cyber hover:opacity-90 transition-opacity text-primary-foreground" // Apply gradient + text color
+    >
+      <Wallet className="w-4 h-4 mr-2" /> {/* Add the icon */}
+      Connect Wallet
+    </Button>
+  );
 }
