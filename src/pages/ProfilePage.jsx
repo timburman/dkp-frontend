@@ -1,5 +1,5 @@
 import { useAccount, useReadContract } from "wagmi";
-import { DKP_CONTRACT_ADDRESS, DKP_TOKEN_ABI } from "@/constants";
+import { DKP_CONTRACT_ABI, DKP_CONTRACT_ADDRESS} from "@/constants";
 import { SubmissionCard } from "@/components/web3/SubmissionCard";
 import { Card, CardTitle, CardDescription } from "@/components/ui/card";
 
@@ -8,14 +8,14 @@ export function ProfilePage() {
 
     const {data: submissionIds, isLoading} = useReadContract({
         address: DKP_CONTRACT_ADDRESS,
-        abi: DKP_TOKEN_ABI,
-        functionName: 'userSubmissions',
+        abi: DKP_CONTRACT_ABI,
+        functionName: 'getUserSubmissions',
         args: [address],
         query: {
             enabled: isConnected,
         },
     });
-
+    console.log("Submission Ids:",submissionIds);
     return (
         <div className="flex flex-col gap-6">
         <h1 className="text-3xl font-bold text-white">My Submissions</h1>
