@@ -8,11 +8,11 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { useToast } from "@/hooks/use-toast";
 
-const EtherscanLink = ({hash}) => {
-    <a href={`https://sepolia.etherscan.io/tx/${hash}`} target="_blank" rel="noopener noreferrer">
-        <Button variant="link" className="p-0 h-auto">View on Etherscan</Button>
-    </a>
-}
+const EtherscanLink = ({ hash }) => (
+  <a href={`https://sepolia.etherscan.io/tx/${hash}`} target="_blank" rel="noopener noreferrer">
+    <Button variant="link" className="p-0 h-auto">View on Etherscan</Button>
+  </a>
+);
 
 
 export function VoteButtons({submissionId}) {
@@ -70,7 +70,7 @@ export function VoteButtons({submissionId}) {
         if (isConfirmed) {
             toast({
                 title: "Success! 🎉",
-                description: "Post Boosted!",
+                description: "Vote Submitted!",
                 variant: "default", // You can style this to be green
             });
             queryClient.invalidateQueries({ queryKey: ['readContracts'] });

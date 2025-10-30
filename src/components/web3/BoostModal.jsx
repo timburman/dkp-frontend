@@ -8,11 +8,11 @@ import { ethers } from "ethers";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
-const EtherscanLink = ({hash}) => {
-    <a href={`https://sepolia.etherscan.io/tx/${hash}`} target="_blank" rel="noopener noreferrer">
-        <Button variant="link" className="p-0 h-auto">View on Etherscan</Button>
-    </a>
-}
+const EtherscanLink = ({ hash }) => (
+  <a href={`https://sepolia.etherscan.io/tx/${hash}`} target="_blank" rel="noopener noreferrer">
+    <Button variant="link" className="p-0 h-auto">View on Etherscan</Button>
+  </a>
+);
 
 export function BoostModal({ submissionId }) {
     const [amount, setAmount] = useState('10');
