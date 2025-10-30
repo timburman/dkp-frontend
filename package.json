@@ -24,6 +24,7 @@
     "ethers": "^6.15.0",
     "lucide-react": "^0.544.0",
     "path": "^0.12.7",
+    "pinata": "^2.5.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.1",
