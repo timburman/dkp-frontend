@@ -10,7 +10,7 @@ export function VotingHistoryPage() {
     const {data: votedSubmissionIds, isLoading} = useReadContract({
         address: DKP_CONTRACT_ADDRESS,
         abi: DKP_CONTRACT_ABI,
-        functionName: 'userVotedOnSubmissions',
+        functionName: 'getUserVotedOnSubmissions',
         args: [address],
         query: {
             enabled: isConnected,
