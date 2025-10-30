@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { useQueryClient } from '@tanstack/react-query';
 import { DKP_CONTRACT_ADDRESS, DKP_CONTRACT_ABI } from '../constants';
-import { ethers } from 'ethers';
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, FileText, Coins } from "lucide-react";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { PinataSDK } from 'pinata';
 
 const EtherscanLink = ({ hash }) => (
   <a href={`https://sepolia.etherscan.io/tx/${hash}`} target="_blank" rel="noopener noreferrer">
@@ -17,10 +17,16 @@ const EtherscanLink = ({ hash }) => (
   </a>
 );
 
+const pinata = new PinataSDK({
+    pinataJwt: import.meta.env.VITE_PINATA_JWT,
+    pinataGateway: "blush-big-horse-204.mypinata.cloud",
+})
+
 export function SubmitPage() {
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [isUploading, setIsUploading] = useState(false);
     const { address } = useAccount();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
@@ -50,14 +56,22 @@ export function SubmitPage() {
             alert('Content cannot be empty');
             return;
         }
+        setIsUploading(true);
 
-        const contentHash = ethers.keccak256(ethers.toUtf8Bytes(content));
+        const submissionData = {title, content};
+
+        const upload = await pinata.upload.public.json(submissionData);
+
+        const cid = upload.cid;
+
+        console.log("Content Id:", cid);
+        setIsUploading(false);
 
         writeContract({
             address: DKP_CONTRACT_ADDRESS,
             abi: DKP_CONTRACT_ABI,
             functionName: 'submitContent',
-            args: [contentHash],
+            args: [cid],
         });
     }
 
@@ -73,8 +87,13 @@ export function SubmitPage() {
                 description: "Waiting for confirmation...",
                 action: <EtherscanLink hash={hash} />,
             });
-        }
-    }, [isPending, isConfirming, hash, toast]);
+        } else if (isUploading) {
+            toast({ 
+                title: "Uploading to IPFS...",
+                description: "Please wait..."
+            });
+        } 
+    }, [isPending, isConfirming, hash, toast, isUploading]);
 
     useEffect(() => {
         const e = writeError || receiptError;
