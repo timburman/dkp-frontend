@@ -1,5 +1,5 @@
 
-export const DKP_CONTRACT_ADDRESS = "0x6789E70ada20C853E12b8bae36085e60FeaAE7Eb";
+export const DKP_CONTRACT_ADDRESS = "0x85De1717BE77A70f7bbDD1Ef4B3CD229D739fe94";
 export const DKP_TOKEN_ADDRESS = "0x11D57B15DC8cbd9743370731e2C734bc08117825"
 
 export const DKP_CONTRACT_ABI = [
@@ -215,9 +215,9 @@ export const DKP_CONTRACT_ABI = [
               "internalType": "uint256"
             },
             {
-              "name": "contentHash",
-              "type": "bytes32",
-              "internalType": "bytes32"
+              "name": "contentId",
+              "type": "string",
+              "internalType": "string"
             },
             {
               "name": "author",
@@ -260,6 +260,44 @@ export const DKP_CONTRACT_ABI = [
               "internalType": "bool"
             }
           ]
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getUserSubmissions",
+      "inputs": [
+        {
+          "name": "user",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256[]",
+          "internalType": "uint256[]"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "getUserVotedOnSubmissions",
+      "inputs": [
+        {
+          "name": "user",
+          "type": "address",
+          "internalType": "address"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256[]",
+          "internalType": "uint256[]"
         }
       ],
       "stateMutability": "view"
@@ -438,9 +476,9 @@ export const DKP_CONTRACT_ABI = [
           "internalType": "uint256"
         },
         {
-          "name": "contentHash",
-          "type": "bytes32",
-          "internalType": "bytes32"
+          "name": "contentId",
+          "type": "string",
+          "internalType": "string"
         },
         {
           "name": "author",
@@ -490,9 +528,9 @@ export const DKP_CONTRACT_ABI = [
       "name": "submitContent",
       "inputs": [
         {
-          "name": "_contentHash",
-          "type": "bytes32",
-          "internalType": "bytes32"
+          "name": "_contentId",
+          "type": "string",
+          "internalType": "string"
         }
       ],
       "outputs": [
@@ -512,6 +550,11 @@ export const DKP_CONTRACT_ABI = [
           "name": "user",
           "type": "address",
           "internalType": "address"
+        },
+        {
+          "name": "repoSupply",
+          "type": "uint256",
+          "internalType": "uint256"
         }
       ],
       "outputs": [],
@@ -551,6 +594,30 @@ export const DKP_CONTRACT_ABI = [
     {
       "type": "function",
       "name": "userSubmissions",
+      "inputs": [
+        {
+          "name": "",
+          "type": "address",
+          "internalType": "address"
+        },
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256",
+          "internalType": "uint256"
+        }
+      ],
+      "stateMutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "userVotedOnSubmissions",
       "inputs": [
         {
           "name": "",
@@ -735,25 +802,6 @@ export const DKP_CONTRACT_ABI = [
           "type": "uint256",
           "indexed": false,
           "internalType": "uint256"
-        }
-      ],
-      "anonymous": false
-    },
-    {
-      "type": "event",
-      "name": "SubmissionFinalized",
-      "inputs": [
-        {
-          "name": "id",
-          "type": "uint256",
-          "indexed": true,
-          "internalType": "uint256"
-        },
-        {
-          "name": "status",
-          "type": "uint8",
-          "indexed": true,
-          "internalType": "enum DKP.SubmissionStatus"
         }
       ],
       "anonymous": false
