@@ -105,7 +105,7 @@ export function SubmitPage() {
             });
             queryClient.invalidateQueries({ queryKey: ['readContracts'] });
             setContent('');
-            navigate('/');
+            navigate('/explore');
         } else if (e) {
             toast({
                 title: "Transaction Failed",

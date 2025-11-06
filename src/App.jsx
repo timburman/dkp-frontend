@@ -9,6 +9,7 @@ import { ProfilePage } from './pages/ProfilePage';
 import { Toaster } from './components/ui/toaster';
 import { ExplorePage } from './pages/ExplorePage';
 import { VotingHistoryPage } from './pages/VotingHistoryPage';
+import {SubmissionDetailPage} from './pages/SubmissionDetailPage';
 
 const AppLayout = () => {
   const { isConnected } = useAccount();
@@ -48,6 +49,8 @@ function App() {
           <Route path="/submit" element={<SubmitPage />} />
           <Route path='/profile' element={<ProfilePage />} />
           <Route path='/voting-history' element={<VotingHistoryPage />} />
+
+          <Route path='/submission/:id' element={<SubmissionDetailPage />}/>
         </Route>
       </Routes>
     </BrowserRouter>
