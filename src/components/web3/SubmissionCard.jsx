@@ -2,6 +2,7 @@ import { useReadContract, useAccount, useWriteContract, useWaitForTransactionRec
 import { useQuery } from "@tanstack/react-query";
 import { DKP_CONTRACT_ADDRESS, DKP_CONTRACT_ABI } from "@/constants";
 import { ethers } from "ethers";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -9,6 +10,10 @@ import { VoteButtons } from "./VoteButtons";
 import { BoostModal } from "./BoostModal";
 import { shortenAddress } from "@/lib/utils";
 import { Skeleton } from "../ui/skeleton";
+import {
+  ClaimRewardButton,
+  ReclaimReputationButton,
+} from '@/components/web3/ActionButtons';
 
 
 async function fetchIpfsContent(cid, gateway = "https://blush-big-horse-204.mypinata.cloud/ipfs/") {
@@ -28,48 +33,6 @@ async function fetchIpfsContent(cid, gateway = "https://blush-big-horse-204.mypi
     console.error("Error fetching from IPFS:", err);
     return null;
   }
-}
-
-function ClaimRewardsButton({submissionId}) {
-    const {writeContract, data: hash, isPending} = useWriteContract();
-    const {isLoading: isConfirming} = useWaitForTransactionReceipt({hash});
-
-    return(
-        <Button
-            size="sm"
-            onClick={() => writeContract({
-                address: DKP_CONTRACT_ADDRESS,
-                abi: DKP_CONTRACT_ABI,
-                functionName: 'claimRewards',
-                args: [submissionId],
-            })}
-            disabled={isPending || isConfirming}
-            className="bg-purple-600 hover:bg-purple-700"
-        >
-            {isPending || isConfirming ? 'Claiming...' : "Claim Reward"}
-        </Button>
-    );
-}
-
-function ReputationReclaimButton({submissionId}) {
-    const {writeContract, data: hash, isPending} = useWriteContract();
-    const {isLoading: isConfirming} = useWaitForTransactionReceipt({hash});
-
-    return (
-        <Button 
-        size="sm" 
-        onClick={() => writeContract({
-            address: DKP_CONTRACT_ADDRESS,
-            abi: DKP_CONTRACT_ABI,
-            functionName: 'reclaimReputation',
-            args: [submissionId],
-        })}
-        disabled={isPending || isConfirming}
-        className="bg-gray-600 hover:bg-gray-700"
-        >
-        {isPending || isConfirming ? 'Reclaiming...' : 'Reclaim Stake'}
-        </Button>
-    );
 }
 
 export function SubmissionCard({submissionId}) {
@@ -133,50 +96,53 @@ export function SubmissionCard({submissionId}) {
     const canReclaim = (status === "Verified" || status === "Rejected") && (userVote > 0) && (lockedRep > 0);
 
     return (
-    <Card className="bg-gray-800 border-gray-700 text-white">
-      <CardHeader>
-        <div className="flex justify-between items-start">
-          <div>
-            {/* 6. Display title from IPFS or skeleton */}
+    
+      <Link to={`/submission/${id.toString()}`}>
+        <Card className="bg-gray-800 border-gray-700 text-white">
+          <CardHeader>
+            <div className="flex justify-between items-start">
+              <div>
+                {/* 6. Display title from IPFS or skeleton */}
+                {isLoadingIpfs ? (
+                  <Skeleton className="h-8 w-3/4 mb-2" />
+                ) : (
+                  <CardTitle>{ipfsData?.title || "Submission " + id.toString()}</CardTitle>
+                )}
+                <CardDescription>Author: {shortenAddress(author)}</CardDescription>
+              </div>
+              <Badge /* ... */ >{status}</Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {/* 7. Display content from IPFS or skeleton */}
             {isLoadingIpfs ? (
-              <Skeleton className="h-8 w-3/4 mb-2" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+              </div>
             ) : (
-              <CardTitle>{ipfsData?.title || "Submission " + id.toString()}</CardTitle>
+              <p className="text-sm text-gray-400 break-words line-clamp-3">
+                {ipfsData?.content || "No content found."}
+              </p>
             )}
-            <CardDescription>Author: {shortenAddress(author)}</CardDescription>
-          </div>
-          <Badge /* ... */ >{status}</Badge>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {/* 7. Display content from IPFS or skeleton */}
-        {isLoadingIpfs ? (
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-5/6" />
-          </div>
-        ) : (
-          <p className="text-sm text-gray-400 break-words line-clamp-3">
-            {ipfsData?.content || "No content found."}
-          </p>
-        )}
-      </CardContent>
-      <CardFooter className="flex justify-between items-center">
-        <div className="flex gap-4 text-sm">
-          <span className="text-green-400">Up: {upVotes.toString()}</span>
-          <span className="text-red-400">Down: {downVotes.toString()}</span>
-          <span className="text-blue-400">Boost: {boostAmount}</span>
-        </div>
-        <div className="flex flex-wrap gap-2 justify-end">
-          {/* Show the correct action based on status and user */}
-          {canVote && <VoteButtons submissionId={id} />}
-          {canClaimReward && <ClaimRewardButton submissionId={id} />}
-          {canReclaim && <ReclaimReputationButton submissionId={id} />}
-          <BoostModal submissionId={id} />
-        </div>
-      </CardFooter>
-    </Card>
+          </CardContent>
+          <CardFooter className="flex justify-between items-center">
+            <div className="flex gap-4 text-sm">
+              <span className="text-green-400">Up: {upVotes.toString()}</span>
+              <span className="text-red-400">Down: {downVotes.toString()}</span>
+              <span className="text-blue-400">Boost: {boostAmount}</span>
+            </div>
+            <div className="flex flex-wrap gap-2 justify-end">
+              {/* Show the correct action based on status and user */}
+              {canVote && <VoteButtons submissionId={id} />}
+              {canClaimReward && <ClaimRewardButton submissionId={id} />}
+              {canReclaim && <ReclaimReputationButton submissionId={id} />}
+              <BoostModal submissionId={id} />
+            </div>
+          </CardFooter>
+        </Card>
+      </Link>
   );
 
 }
