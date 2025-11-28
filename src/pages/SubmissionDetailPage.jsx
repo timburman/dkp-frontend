@@ -93,7 +93,7 @@ export function SubmissionDetailPage() {
     return (
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* --- Left Column: Content --- */}
-        <div className="lg:col-span-2 glass-card p-8 rounded-xl cyber-border">
+        <div className="lg:col-span-2 glass-card p-8 rounded-xl cyber-border mt-20">
             <Button
             variant="ghost"
             onClick={() => navigate(-1)} // Go back
